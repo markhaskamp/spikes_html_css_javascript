@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<title>EventAggregator, JSSpec results</title>
+
+<link rel="stylesheet" type="text/css" href="jsspec/JSSpec.css" />
+<script type="text/javascript" src="jsspec/diff_match_patch.js"></script>
+<script type="text/javascript" src="jsspec/JSSpec.js"></script>
+
+<script type="text/javascript" src="../javascript/prototype.js"></script>
+<script type="text/javascript" src="../javascript/EventAggregator.js"></script>
+
+<script type="text/javascript">// <![CDATA[
+
+describe ('prototype', {
+  "hash set and get": function() {
+    var h = $H();
+    h.set('foo', 'too');
+    value_of(h.get('foo')).should_be('too');
+  },
+
+  "hash - call get() for a non-existant key - return undefined": function() {
+    var h = $H();
+    h.set('one', 'two');
+
+   value_of(h.get('foo')).should_be(undefined);
+  }
+
+});
+
+function someFunc() {
+  return '12345';
+}
+
+var AClass = Class.create({
+  initialize: function() {
+    this.one = 1.0;
+    this.two = 1;
+
+    this.ea = new EventAggregator(); 
+  },
+  wasKilroyThere: function() {
+    return 'kilroy was here';
+  },
+  oneIncrement: function() {
+    this.one = this.one + 1;
+  },
+  twoIncrement: function() {
+    this.two += 1;
+  },
+
+  incrementProperty: function(argsArray) {
+    var s = argsArray[0];
+    var n = argsArray[1]
+
+    if(s == 'one') {
+      this.one += n;
+    }
+    else if (s == 'two') {
+      this.two += n;
+    } 
+  }
+    
+  
+});
+
+
+describe('EventAggregator', {
+
+  "subscribe - subscribe to an event with an inline function as a value - trafficCop returns return value of function": function() {
+
+    var id = 'foo';
+    var ea = new EventAggregator();
+    ea.subscribe(EA_Keys.EVT_FOO, id, function() { return 'abcdefg' });
+
+    value_of(ea.trafficCop.get(EA_Keys.EVT_FOO)[0].get(id)()).should_be('abcdefg');
+  },
+
+  "subscribe - subscribe to an event with function f' as a value - trafficCop calls f' and returns return value of function": function() {
+    var id = 'foo';
+    var ea = new EventAggregator();
+    ea.subscribe(EA_Keys.EVT_FOO, id, someFunc);
+
+    value_of(ea.trafficCop.get(EA_Keys.EVT_FOO)[0].get(id)()).should_be('12345');
+  },
+
+  "subscribe - subscribe to an event with a class member function as a value - trafficCop returns return value of function": function() {
+    var id = 'foo';
+    var c = new AClass();
+    var ea = new EventAggregator();
+    ea.subscribe(EA_Keys.EVT_FOO, id, c.wasKilroyThere);
+
+    value_of(ea.trafficCop.get(EA_Keys.EVT_FOO)[0].get(id)()).should_be('kilroy was here');
+  },
+  
+  "subscribe - add a second different function to EventAggregator": function() {
+    var id = 'foo';
+    var id2 = 'too';
+    var ea = new EventAggregator();
+
+    ea.subscribe(EA_Keys.EVT_FOO, id, function() { return 'f1' });
+    ea.subscribe(EA_Keys.EVT_TOO, id2, function() { return 'f2' });
+
+   value_of(ea.trafficCop.get(EA_Keys.EVT_FOO)[0].get(id)()).should_be('f1');
+   value_of(ea.trafficCop.get(EA_Keys.EVT_TOO)[0].get(id2)()).should_be('f2');
+
+  },
+
+  "subscribe - add a second function to the same key": function() {
+    var id = 'foo';
+    var ea = new EventAggregator();
+    var c = new AClass();
+
+    ea.subscribe(EA_Keys.EVT_FOO, id, c.oneIncrement );
+    value_of(ea.trafficCop.get(EA_Keys.EVT_FOO).length).should_be(1);
+    ea.subscribe(EA_Keys.EVT_FOO, 'id2', c.twoIncrement );
+    
+    value_of(ea.trafficCop.keys().length).should_be(1);
+    value_of(ea.trafficCop.get(EA_Keys.EVT_FOO).length).should_be(2);
+  },
+  
+  "subscribe - two functions for one key - both get called": function() {
+    var id = 'foo';
+    var ea = new EventAggregator();
+    var c = new AClass();
+
+    value_of(c.one).should_be(1);
+    value_of(c.two).should_be(1);
+
+    ea.subscribe(EA_Keys.EVT_FOO, id, c.oneIncrement.bind(c) );
+    ea.subscribe(EA_Keys.EVT_FOO, 'id2', c.twoIncrement.bind(c) );
+
+    ea.publish(EA_Keys.EVT_FOO);
+
+    value_of(c.one).should_be(2);
+    value_of(c.two).should_be(2);
+  },
+
+  "pass arguments from client to trafficCop to subscriber": function() {
+    var ea = new EventAggregator();
+    var c = new AClass();
+
+    value_of(c.one).should_be(1);
+    value_of(c.two).should_be(1);
+
+    ea.subscribe(EA_Keys.EVT_FOO, 'id', c.incrementProperty.bind(c) );
+    ea.publish(EA_Keys.EVT_FOO, 'one', 4);
+    value_of(c.one).should_be(5);
+    value_of(c.two).should_be(1);
+
+    ea.publish(EA_Keys.EVT_FOO, 'two', 41);
+    value_of(c.one).should_be(5);
+    value_of(c.two).should_be(42);
+  }
+
+  ,"unsubscribe a function": function() {
+    var ea = new EventAggregator();
+    var c = new AClass();
+
+    value_of(c.one).should_be(1);
+    ea.subscribe(EA_Keys.EVT_FOO, 'id', c.oneIncrement.bind(c) );
+    ea.publish(EA_Keys.EVT_FOO);
+    value_of(c.one).should_be(2);
+
+    ea.unsubscribe(EA_Keys.EVT_FOO, 'id');
+    ea.publish(EA_Keys.EVT_FOO);
+    value_of(c.one).should_be(2);
+  }
+
+  ,"call unsubscribe for a non-existent id": function() {
+    var ea = new EventAggregator();
+    var c = new AClass();
+
+    value_of(c.one).should_be(1);
+    ea.subscribe(EA_Keys.EVT_FOO, 'id', c.oneIncrement.bind(c) );
+
+    ea.publish(EA_Keys.EVT_FOO);
+    value_of(c.one).should_be(2);
+
+    ea.unsubscribe(EA_Keys.EVT_FOO, 'id');
+    ea.publish(EA_Keys.EVT_FOO);
+    value_of(c.one).should_be(2);
+
+  }
+
+  ,"getKeys": function() {
+    var ea = new EventAggregator();
+
+    value_of(ea.getKeys().length).should_be(0);
+    ea.subscribe(EA_Keys.EVT_FOO, 'id', function() { return 42; });
+    value_of(ea.getKeys().length).should_be(1);
+  }
+
+});
+
+
+// ]]></script>
+</head>
+<body><div style="display:none;"><p>A</p><p>B</p></div></body>
+</html>

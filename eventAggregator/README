@@ -1,0 +1,44 @@
+EventAggregator uses Prototype, as do these examples.
+
+edit EventAggreator.js
+- - - - - - -
+    var EA_Keys {
+      YOUR_KEY_STRING_HERE: 'yourKeyStringHere'
+      ,AS_MANY_AS_YOU_WANT: 'asManyAsYouWant'
+    }
+- - - - - - -
+
+
+your javascript file
+- - - - - - -
+    function functionThatWillBeCalledBack() {
+      // react to event
+    }
+    
+    var ea = new EventAggregator()
+    ea.subscribe(EA_Keys.YOUR_KEY_STRING_HERE, 'idUniqueToCallBackFunction', functionThatWillBeCalledBack);
+    ...
+    ...
+    
+    ea.publish(EA_Keys.YOUR_KEY_STRING_HERE);  // functionThatWillBeCalledBack will be called back
+    ...
+    ...
+    
+    ea.unsubscribe('idUniqueToCallBackFunction');
+- - - - - - -
+
+
+using a class function as a callback
+- - - - - - -
+    var CFoo = Class.create({ foo: function() { // react to event } })
+    
+    ...
+    ...
+    var c = new CFoo();
+    ea.subscribe(EA_Keys.AS_MANY_AS_YOU_WANT, 'id2', c.foo.bind(c));
+    ...
+    ...
+    ea.unsubscribe('id2');
+- - - - - - -
+
+

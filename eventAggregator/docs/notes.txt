@@ -1,0 +1,25 @@
+EventAggregator
+  trafficCop:
+    hash
+      key   = Event name
+      value = array
+        array elements are hashes
+          key   = key to identify the callback_function
+ 	        value = callback_function
+
+
+json e.g.
+
+trafficCop = 
+{
+		 { EVT1,  [  
+     				    { id1, callback1 }
+       			   ,{ id2, callback2 }
+					    ]
+      
+      ,EVT2, [
+               { id3, callback3 }
+              ,{ id4, callback4 }
+             ]
+     }
+}
