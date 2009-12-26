@@ -1,0 +1,2 @@
+With Firebug console, if you have >1 tabs open in browser, javascript errors in any tab only show up in the console of the first tab.
+

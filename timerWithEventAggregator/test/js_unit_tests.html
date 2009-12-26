@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<title>JSSpec results</title>
+
+<link rel="stylesheet" type="text/css" href="jsspec/JSSpec.css" />
+<script type="text/javascript" src="jsspec/diff_match_patch.js"></script>
+<script type="text/javascript" src="jsspec/JSSpec.js"></script>
+
+<script type="text/javascript" src="../app/lib/prototype.js"></script>
+<script type="text/javascript" src="../app/lib/EventAggregator.js"></script>
+<script type="text/javascript" src="../app/lib/Timer.js"></script>
+
+<script type="text/javascript">// <![CDATA[
+
+describe('"Should match"s', {
+	'Should match': function() {
+		value_of("Hello").should_match(/ell/);
+	}
+});
+
+var CFoo = Class.create({
+  initialize: function() { this.foo = 0;}
+  ,catchTimerStop: function() { 
+    this.foo = 42; 
+  }
+});
+
+var too = 0;
+function setToo() {
+   too = 42;
+}
+describe('Timer', {
+  'timer.setEventAggregator() adds TIMER_STOP subscription to EventAggregator': function() {
+    var ea = new EventAggregator();    
+    var t = new Timer();
+
+    value_of(ea.trafficCop.keys().size()).should_be(0);
+    value_of(ea.trafficCop.get(EA_Keys.TIMER_STOP)).should_be(undefined);
+
+    t.setEventAggregator(ea);
+
+    value_of(ea.trafficCop.keys().size()).should_be(1);
+    value_of(ea.trafficCop.get(EA_Keys.TIMER_STOP)).should_not_be(undefined);
+  }
+
+  ,'client displayTimerStopped gets called': function() {
+
+    var cfoo = new CFoo();
+
+    var ea = new EventAggregator();    
+    ea.subscribe(EA_Keys.TIMER_STOP, 't1', cfoo.catchTimerStop.bind(cfoo));
+    var t = new Timer();
+    t.setEventAggregator(ea);
+
+    value_of(cfoo.foo).should_be(0);
+    t.start();
+    ea.publish(EA_Keys.TIMER_STOP);
+    value_of(cfoo.foo).should_be(42);
+  }
+
+  ,'EvtAggr call the Timer.stop when client calls ea.publish(TIMER_STOP)': function() {
+
+    var cfoo = new CFoo();
+
+    var ea = new EventAggregator();    
+    ea.subscribe(EA_Keys.TIMER_STOP, 't1', cfoo.catchTimerStop.bind(cfoo));
+
+    Timer.prototype.stop = setToo;
+    var t = new Timer();
+    t.setEventAggregator(ea);
+
+    value_of(too).should_be(0);
+    t.start();
+    ea.publish(EA_Keys.TIMER_STOP);
+    value_of(too).should_be(42);
+  }
+});
+
+// ]]></script>
+</head>
+<body><div style="display:none;"><p>A</p><p>B</p></div></body>
+</html>
