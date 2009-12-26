@@ -13,12 +13,13 @@ document.observe('dom:loaded', function() {
 
 	var ea = new EventAggregator();
 
-  ea.eventSubscribe('UpdateCDivs', updateC2);
-  ea.eventSubscribe('UpdateCDivs', updateC3);
+  ea.subscribe('UpdateCDivs', 'forc2', updateC2);
+
+  ea.subscribe('UpdateCDivs', 'forc3', updateC3);
 
 	$('foo').observe('mouseover', function() {$('foo').setStyle({cursor: "pointer"})});
 	$('foo').observe('mouseout', function() {$('foo').setStyle({cursor: "default"})});
 
-	$('foo').observe('click', function() { ea.eventPublish('UpdateCDivs'); } );
+	$('foo').observe('click', function() { ea.publish('UpdateCDivs'); } );
 });
 
