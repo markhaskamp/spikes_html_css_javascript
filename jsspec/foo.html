@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<title>JSSpec results</title>
+<link rel="stylesheet" type="text/css" href="JSSpec.css" />
+<script type="text/javascript" src="diff_match_patch.js"></script>
+<script type="text/javascript" src="JSSpec.js"></script>
+<script type="text/javascript" src="prototype.js"></script>
+<script type="text/javascript">
+
+var Foo = Class.create({
+			initialize: function(one, two, three) {
+			  this.one = one;
+			  this.two = two;
+			  this.three = three;
+
+			  this.anArray = [];
+			},
+
+			isThisOne: function(n) {
+			  return (n == 1);
+			}
+
+
+
+});
+
+// <![CDATA[
+
+// Your spec goes here
+describe('JSSpec expectations', {
+			before_each: function() {f_all = new Foo('a', 'b', 'c')},
+
+      'should_be': function() {
+			  value_of(f_all.one).should_be('a');
+			  value_of(f_all.two).should_not_be('foo');
+      },
+
+			'should_be_empty': function() {
+			  value_of(f_all.anArray).should_be_empty();
+
+			  f_all.anArray.push('foo')
+			  value_of(f_all.anArray).should_not_be_empty();
+			  value_of(f_all.anArray[0]).should_be('foo');
+			},
+
+			'should_be_true': function() {
+			  value_of(f_all.isThisOne(1)).should_be_true();
+			  value_of(f_all.isThisOne(2)).should_be_false();
+			},
+
+			'should_have': function() {
+			  value_of("Hello").should_have(5, "characters"); 
+			  value_of([1,2,3]).should_have(3, "items"); 
+			  value_of({name:'Alan Kang', email:'jania902@gmail.com', accounts:['A', 'B']}).should_have(2, "accounts");
+			  value_of({name:'Alan Kang', email:'jania902@gmail.com', accounts:['A', 'B']}).should_have(9, "name");
+			  value_of([1,2,3]).should_have_exactly(3, "items");
+			  value_of([1,2,3]).should_have_at_least(2, "items");
+			  value_of([1,2,3]).should_have_at_most(4, "items");
+			},
+			
+			'should_include': function() {
+			  value_of([1,2,3]).should_include(2);
+			  // value_of([1,2,3]).should_not_include(4);
+ 
+  			value_of({a: 1, b: 2}).should_include("a");
+			  value_of({a: 1, b: 2}).should_not_include("c");
+			},
+
+			'should_match': function() {
+			  value_of("eddie would go").should_match(/^ed/);
+			  value_of("eddie would go").should_not_match(/\d/);
+			}
+
+			// 'should_fail': function() {
+			  // value_of(this).should_fail("ToDo");
+			// }
+
+})
+
+
+// ]]></script>
+</head>
+<body></body>
+</html>
+
