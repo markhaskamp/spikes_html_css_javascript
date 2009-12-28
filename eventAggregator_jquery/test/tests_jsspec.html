@@ -11,6 +11,7 @@
 <script type="text/javascript">
 
 
+var EVENT_KEYS = {FOO: 'foo', TOO: 'too'};
 var ea;
 
 var foo = 0;
@@ -45,19 +46,14 @@ describe('EventAggregator', {
   }
 
   ,'"subscribe" when no events have been subscribed to, then aggregator[evt] is undefined': function() {
-    value_of(ea.aggregator['eventID']).should_be(undefined);
-  }
-
-  ,'"subscribe" method adds an event to the aggregator': function() {
-    ea.subscribe('eventID', 'functionID', function() {});
-    value_of(ea.aggregator['eventID'].length).should_be(1);
+    value_of(ea.aggregator[EVENT_KEYS.FOO]).should_be(undefined);
   }
 
   ,'"publish" to a subscribed event': function() {
     value_of(foo).should_be(0);
 
-    ea.subscribe('eventID', 'functionID', fnSetFoo);
-    ea.publish('eventID');
+    ea.subscribe(EVENT_KEYS.FOO, 'functionID', fnSetFoo);
+    ea.publish(EVENT_KEYS.FOO);
 
     value_of(foo).should_be(42);
   }
@@ -66,9 +62,9 @@ describe('EventAggregator', {
     value_of(foo).should_be(0);
     value_of(too).should_be(0);
 
-    ea.subscribe('eventID', 'functionID_foo', fnSetFoo);
-    ea.subscribe('eventID', 'functionID_too', fnSetToo);
-    ea.publish('eventID');
+    ea.subscribe(EVENT_KEYS.FOO, 'functionID_foo', fnSetFoo);
+    ea.subscribe(EVENT_KEYS.FOO, 'functionID_too', fnSetToo);
+    ea.publish(EVENT_KEYS.FOO);
 
     value_of(foo).should_be(42);
     value_of(too).should_be(43);
@@ -77,17 +73,21 @@ describe('EventAggregator', {
   ,'"unsubscribe"': function() {
     value_of(foo).should_be(0);
 
-    ea.subscribe('eventID', 'functionID', fnSetFoo);
-    ea.publish('eventID');
+    ea.subscribe(EVENT_KEYS.FOO, 'functionID', fnSetFoo);
+    ea.subscribe(EVENT_KEYS.FOO, 'functionID_too', fnSetToo);
+    ea.publish(EVENT_KEYS.FOO);
     value_of(foo).should_be(42);
+    value_of(too).should_be(43);
 
     foo = 0;
+    too = 0;
     value_of(foo).should_be(0);
+    value_of(too).should_be(0);
 
-    ea.unsubscribe('eventID', 'functionID');
-    ea.publish('eventID');
+    ea.unsubscribe(EVENT_KEYS.FOO, 'functionID');
+    ea.publish(EVENT_KEYS.FOO);
     value_of(foo).should_be(0);
-
+    value_of(too).should_be(43);
   }
 
 });

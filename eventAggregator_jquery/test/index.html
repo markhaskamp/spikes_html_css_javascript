@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<title>Demo page for event aggregator</title>
+<script type="text/javascript" src="../lib/EventAggregator.js"></script>
+<script type="text/javascript" src="../lib/jquery-1.3.2.min.js"></script>
+<script>
+
+var ea;
+var EVENT_KEYS = { FOO: 'foo', TOO: 'too', FOO_AND_TOO: 'foo_and_too' };
+
+function addToFoo() {
+  var oldHTML = $('#foo')[0].innerHTML;
+  $('#foo')[0].innerHTML = oldHTML + '<br />eddie would go';
+}
+
+function addToToo() {
+  var oldHTML = $('#too')[0].innerHTML;
+  $('#too')[0].innerHTML = oldHTML + '<br />kilroy was here';
+}
+
+function addToBoth() {
+  addToFoo();
+  addToToo();
+}
+
+$(document).ready(function() {
+  ea = new EventAggregator();
+  ea.subscribe(EVENT_KEYS.FOO, 'main_addToFoo', addToFoo);
+  ea.subscribe(EVENT_KEYS.TOO, 'main_addToToo', addToToo);
+  ea.subscribe(EVENT_KEYS.FOO_AND_TOO, 'main_addToBoth', addToBoth);
+
+  $('#clickFoo').click(function(evt) {
+    ea.publish(EVENT_KEYS.FOO);
+  });
+  
+  $('#clickToo').click(function(evt) {
+    ea.publish(EVENT_KEYS.TOO);
+  });
+  
+  $('#clickBoth').click(function(evt) {
+    ea.publish(EVENT_KEYS.FOO_AND_TOO);
+  });
+  
+});
+
+</script>
+
+<style>
+#foo {
+  border: 1px solid #000099;
+  margin-top: 1.0em;
+  color: #000099;
+}
+#too {
+  border: 1px solid #990000;
+  margin-top: 0.5em;
+  color: #990000;
+}
+</style>
+
+</head>
+<body>
+
+<span id='clickFoo'> [update foo] </span>
+<span id='clickToo'> [update too] </span>
+<span id='clickBoth'> [update both] </span>
+
+<div id='foo'>foo</div>
+<div id='too'>too</div>
+
+</body>
+</html>
+
+
+
