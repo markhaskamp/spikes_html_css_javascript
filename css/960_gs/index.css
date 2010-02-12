@@ -1,0 +1,15 @@
+
+body {
+    background-color: #d5d5d5;
+}
+
+.container_12 {
+    background: #ffffff url(img/12_col.gif) repeat-y;
+}
+
+p {
+    border: 1px solid black;
+    margin-bottom: 0.75em;
+    text-align: center;
+}
+
