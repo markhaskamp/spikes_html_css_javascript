@@ -2,40 +2,16 @@
 <html>
 <head>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+  <script type="text/javascript" src="dateValidate.js"></script>
 
-<script>
-
-function isValidDate(dateStr) {
-  // copied from http://www.codetoad.com/javascript_IsValidDate.asp
-  var datePattern = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
-  var matchArray = dateStr.match(datePattern);
-
-  if (matchArray == null) {
-    return false;
-  }
-
-  var month = matchArray[1]; 
-  var day   = matchArray[2]; 
-  month--;
-  var year  = matchArray[3]; 
-
-  var javascriptDate = new Date(year, month, day);
-  return((day == javascriptDate.getDate()) &&
-        (month == javascriptDate.getMonth()) &&
-        (year == javascriptDate.getFullYear()));
-
-}
-
-jQuery(document).ready( function() {
-
+  <script>
+ jQuery(document).ready( function() {
+ 
   $('#btnValidate').click( function() {
     alert(isValidDate($('#txtUserDate').val()));
   });
-
+ 
 });
-
-
-
 </script>
 
 </head>
