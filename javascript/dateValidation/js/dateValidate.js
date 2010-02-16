@@ -9,13 +9,13 @@ function isValidDate(dateStr) {
   }
 
   var month = matchArray[1]; 
-  var day   = matchArray[2]; 
   month--;
+  var day   = matchArray[2]; 
   var year  = matchArray[3]; 
 
   var javascriptDate = new Date(year, month, day);
   return((day == javascriptDate.getDate()) &&
-        (month == javascriptDate.getMonth()) &&
-        (year == javascriptDate.getFullYear()));
+         (month == javascriptDate.getMonth()) &&
+         (year == javascriptDate.getFullYear()));
 
 }
