@@ -1,4 +1,6 @@
 
+var dvMonth = { 1: 0 ,2: 1 ,3: 2 ,4: 3 ,5: 4 ,6: 6 ,7: 6 ,8: 7 ,9: 8 ,10: 9 ,11: 10 ,12: 11 }
+    
 function isValidDate(dateStr) {
   // copied from http://www.codetoad.com/javascript_IsValidDate.asp
   var datePattern = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
@@ -9,13 +11,12 @@ function isValidDate(dateStr) {
   }
 
   var month = matchArray[1]; 
-  month--;
   var day   = matchArray[2]; 
   var year  = matchArray[3]; 
 
-  var javascriptDate = new Date(year, month, day);
+  var javascriptDate = new Date(year, dvMonth[month], day);
   return((day == javascriptDate.getDate()) &&
-         (month == javascriptDate.getMonth()) &&
+         (dvMonth[month] == javascriptDate.getMonth()) &&
          (year == javascriptDate.getFullYear()));
 
 }
