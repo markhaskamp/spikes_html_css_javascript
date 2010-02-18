@@ -1,5 +1,29 @@
 
-var dvMonth = { 1: 0 ,2: 1 ,3: 2 ,4: 3 ,5: 4 ,6: 6 ,7: 6 ,8: 7 ,9: 8 ,10: 9 ,11: 10 ,12: 11 }
+var descriptiveMonth = { january: 0,
+                         february: 1,
+                         march: 2,
+                         april: 3,
+                         may: 4,
+                         june: 5,
+                         july: 6,
+                         august: 7,
+                         september: 8,
+                         october: 9,
+                         november: 10,
+                         december: 11 };
+
+var userMonth = { 1: 'january'
+                ,2: 'february'
+                ,3: 'march'
+                ,4: 'april'
+                ,5: 'may'
+                ,6: 'june'
+                ,7: 'july'
+                ,8: 'august'
+                ,9: 'september'
+                ,10: 'october'
+                ,11: 'november'
+                ,12: 'december' };
     
 function isValidDate(dateStr) {
   // copied from http://www.codetoad.com/javascript_IsValidDate.asp
@@ -11,12 +35,14 @@ function isValidDate(dateStr) {
   }
 
   var month = matchArray[1]; 
+  monthString = userMonth[month];
+  var derivedMonth = descriptiveMonth[monthString];
   var day   = matchArray[2]; 
   var year  = matchArray[3]; 
 
-  var javascriptDate = new Date(year, dvMonth[month], day);
+  var javascriptDate = new Date(year, descriptiveMonth[monthString], day);
   return((day == javascriptDate.getDate()) &&
-         (dvMonth[month] == javascriptDate.getMonth()) &&
+         (derivedMonth == javascriptDate.getMonth()) &&
          (year == javascriptDate.getFullYear()));
 
 }
