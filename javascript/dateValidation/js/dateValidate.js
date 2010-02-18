@@ -1,29 +1,20 @@
 
-var descriptiveMonth = { january: 0,
-                         february: 1,
-                         march: 2,
-                         april: 3,
-                         may: 4,
-                         june: 5,
-                         july: 6,
-                         august: 7,
-                         september: 8,
-                         october: 9,
-                         november: 10,
-                         december: 11 };
+var userMonthNdx = { javascript: 0
+                     ,user: 1
+                     ,descr: 2 };
 
-var userMonth = { 1: 'january'
-                ,2: 'february'
-                ,3: 'march'
-                ,4: 'april'
-                ,5: 'may'
-                ,6: 'june'
-                ,7: 'july'
-                ,8: 'august'
-                ,9: 'september'
-                ,10: 'october'
-                ,11: 'november'
-                ,12: 'december' };
+var userMonth = { 1: [ 0, 1, 'january' ]
+                  ,2: [ 1, 2, 'february' ]
+                  ,3: [ 2, 3, 'march' ]
+                  ,4: [ 3, 4, 'april' ]
+                  ,5: [ 4, 5, 'may' ]
+                  ,6: [ 5, 6, 'june' ]
+                  ,7: [ 6, 7, 'july' ]
+                  ,8: [ 7, 8, 'august' ]
+                  ,9: [ 8, 9, 'september' ]
+                  ,10: [ 9, 10, 'october' ]
+                  ,11: [ 10, 11, 'november' ]
+                  ,12:  [ 11, 12, 'december' ] };
     
 function isValidDate(dateStr) {
   // copied from http://www.codetoad.com/javascript_IsValidDate.asp
@@ -35,14 +26,13 @@ function isValidDate(dateStr) {
   }
 
   var month = matchArray[1]; 
-  monthString = userMonth[month];
-  var derivedMonth = descriptiveMonth[monthString];
+  var jsmonth = userMonth[month][userMonthNdx.javascript];
   var day   = matchArray[2]; 
   var year  = matchArray[3]; 
 
-  var javascriptDate = new Date(year, descriptiveMonth[monthString], day);
+var javascriptDate = new Date(year, jsmonth, day);
   return((day == javascriptDate.getDate()) &&
-         (derivedMonth == javascriptDate.getMonth()) &&
+         (jsmonth == javascriptDate.getMonth()) &&
          (year == javascriptDate.getFullYear()));
 
 }
