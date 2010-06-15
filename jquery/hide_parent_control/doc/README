@@ -1,0 +1,3 @@
+Send an array of control id's and a parent control into a function.
+If none of the controls exist on the web page, hide the parent control.
+
